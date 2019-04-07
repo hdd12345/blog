@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/register.js}"></script>
+</head>
+    <body>
+    
+    <header th:replace="fragments/header::header"></header>
+
+    <div class="container blog-content-container">
+ 
+		<form th:action="@{/user/register}"  method="post" id="register-form">
+			<div class="form-group col-md-5">
+				<label for="username" class="col-form-label">用户名</label>
+				<input type="text" class="form-control" th:id="username" name="username" maxlength="50" placeholder="请输入账号"/> 
+			</div>
+			<div class="form-group col-md-5">
+				<label for="email" class="col-form-label">邮箱</label>
+				<input type="email" class="form-control" id="email" name="email" maxlength="50" placeholder="请输入邮箱"/>
+			</div>
+			<div class="form-group col-md-5">
+				<label for="password" class="col-form-label">密码</label>
+				<input type="password" class="form-control" id="password" name="password" maxlength="30" placeholder="请输入密码" />
+			</div>
+			<div class="form-group col-md-5">
+				<label for="repassword" class="col-form-label">确认密码</label>
+				<input type="password" class="form-control" id="repassword" name="repassword" maxlength="30" placeholder="请确认密码" />
+			</div>
+			<div class="form-group col-md-5">
+				<label for="repassword" class="col-form-label">性别</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="sex" value="男" checked="checked"/>男&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="sex" value="男"/>女
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">注册</button>
+			</div> 
+		</form>
+    </div> <!-- /container -->
+ 
+    </body>
+</html>

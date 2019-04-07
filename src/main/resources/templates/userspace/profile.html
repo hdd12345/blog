@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    <link href="../../static/css/profile.css" th:href="@{/css/profile.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cropbox.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/header.js}"></script>
+    <!-- <script src="../../js/userspace/main.js" th:src="@{/js/userspace/main.js}"></script> -->
+    
+</head>
+<body>
+<!-- Page Content -->
+<div class="container blog-content-container">
+
+    <div class="row">
+
+        <!-- 左侧栏目 -->
+        <div class="col-md-4 col-xl-3">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="img-box">
+                        <div class="thumb-box"></div>
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="action">
+                        <div id="file" class="new-contentarea tc">
+                            <a href="javascript:void(0)" class="upload-img">
+                                <label for="upload-file">浏览</label>
+                            </a>
+                            <input type="file" class="" name="upload-file" id="upload-file">
+                        </div>
+                        <input type="button" id="btnSave" class="btn-crop" value="保存" />
+                        <input type="button" id="btnCrop" class="btn-crop" value="裁切" />
+                        <input type="button" id="btnZoomIn" class="btn-zoom-in" value="-" />
+                        <input type="button" id="btnZoomOut" class="btn-zoom-out" value="+" />
+                    </div>
+                </div>
+
+            </div>
+ 
+        </div>
+        
+   
+
+        <!-- 右侧栏目 -->
+
+
+        <div class="col-md-8 col-xl-9">
+ 
+
+            <!-- 个人设置 -->
+            <div class="card ">
+ 				<h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 个人设置</h5>
+                    <div class="card-block">
+						<form th:action="@{/u/admin/profile}" method="post" th:object="${session.user}" id="userForm">
+							<input type="hidden" name="id" id="userId" th:value="*{user_id}" >
+							
+							<div class="form-group ">
+								<label for="username" class="col-form-label">账号</label>
+								<input type="text" class="form-control" id="username" name="username"  th:value="*{username}" readonly="readonly">
+						
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-form-label">邮箱</label>
+								<input type="email" class="form-control" id="email" name="email" th:value="*{email}" maxlength="50" placeholder="请输入邮箱">
+							</div>
+							<div class="form-group">
+								<label for="password" class="col-form-label">密码</label>
+								<input type="password" class="form-control" id="password" name="password"  th:value="*{password}" maxlength="30" placeholder="请输入密码，至少3个字符，至多30个" >
+							</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary">保存</button>
+							</div>
+						</form>
+                        
+                    </div>
+            </div>
+
+        
+        </div>
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+<!-- The modal -->
+<!-- <!-- <div class="modal fade" id="flipFlop" tabindex="-1" role="dialog"
+	aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="modalLabel">编辑头像</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+			<div class="modal-body" id="avatarFormContainer"></div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-dismiss="modal" id="submitEditAvatar">提交</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div> --> -->
+
+ 
+<!-- JavaScript -->
+<script type="text/javascript">
+      $(window).load(function() {
+　　　　　//options 是首次加载显示的默认的图片样式
+          var options = {
+              thumbBox: '.thumb-box',
+              spinner: '.spinner',
+              imgSrc: './img/koala.jpg'
+          }
+　　　　　　
+          var cropper = $('.img-box').cropbox(options);
+          $('#upload-file').on('change', function() {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  options.imgSrc = e.target.result;
+                  cropper = $('.img-box').cropbox(options);
+                  
+              
+              }
+//            var img = cropper.getDataURL();
+//            $('.cropped').html('');
+//            $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:64px;margin-top:4px;border-radius:64px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
+//            $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:128px;margin-top:4px;border-radius:128px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+//            $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:180px;margin-top:4px;border-radius:180px;box-shadow:0px 0px 12px #7E7E7E;"><p>180px*180px</p>');
+              reader.readAsDataURL(this.files[0]);
+              this.files = [];
+          })
+          $('#btnCrop').on('click', function() {
+              var img = cropper.getDataURL();
+              $('.cropped').html('');
+              $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:64px;margin-top:4px;border-radius:64px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
+              $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:128px;margin-top:4px;border-radius:128px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+              $('.cropped').append('<img src="' + img + '" align="absmiddle" style="width:180px;margin-top:4px;border-radius:180px;box-shadow:0px 0px 12px #7E7E7E;"><p>180px*180px</p>');
+          })
+          $('#btnZoomIn').on('click', function() {
+　　　　　　　　//鼠标滚轮缩小
+              cropper.zoomIn();
+          })
+          $('#btnZoomOut').on('click', function() {
+　　　　　　　　//鼠标滚轮放大　　
+              cropper.zoomOut();
+          })
+          $('#btnSave').on('click', function(){
+		    var img = cropper.getDataURL();
+		    alert(img);
+		})
+      });
+  </script>
+
+</body>
+</html>

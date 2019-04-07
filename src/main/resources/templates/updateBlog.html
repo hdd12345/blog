@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+      <link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	  <link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+      <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+      <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+      <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+      <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+      <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+            rel="stylesheet"/>
+      <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+      <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+      <script type="text/javascript" th:src="@{/js/calendar1.js}"></script>
+      <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+      <script type="text/javascript" th:src="@{/wangEditor-3.1.0/release/wangEditor.min.js}"></script>
+</head>
+<body>
+<style type="text/css">
+ 
+    @import "/css/emoji/nature.css";
+    @import "/css/emoji/object.css";
+    @import "/css/emoji/people.css";
+    @import "/css/emoji/place.css";
+    @import "/css/emoji/Sysmbols.css";
+    @import "/css/emoji/twemoji.css";
+ 
+</style>
+
+<header th:replace="fragments/header::header"></header>
+
+<!-- Page Content -->
+<div class="container blog-content-container">
+
+    <div style="display: -webkit-box;display: -webkit-flex;display: -ms-flexbox;
+  	display: flex;-webkit-flex-wrap: wrap;-ms-flex-wrap: wrap;flex-wrap: wrap;
+  	margin-right: -100px;margin-left: -100px;">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-9">
+
+            <!-- Blog Post -->
+            <div class="card mb-4">
+                <div class="card-block">
+                	<input type="hidden" name="id" value=""/>
+                    <input  type="text" class="form-control" id="title" name="title"  th:value="${blogInfo.title}"  maxlength="50"/>
+					
+                    <textarea class="blog-textarea" th:text="${blogInfo.summary}" id="summary" name="summary" maxlength="300" style="margin-top: 10px"></textarea>
+
+                    <hr/>
+                    <div id="editor"></div>
+                    
+
+                    <hr/>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 右侧栏目 -->
+        <div class="col-md-3">	
+        		<!-- 日历 -->
+                <div class="card ">
+                    <h5 class="card-header"><i class="fa fa-bars" aria-hidden="true"></i> 日历</h5>
+                    <div class="card-block">
+                        <div class="row" id="calendar">
+                        </div>
+                    </div>
+                </div>
+                <div class="card my-4">
+                    <h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 博客设置</h5>
+                    <div class="card-block">
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+                                关键字： 					<input id="key-word" type="text" th:value="${blogInfo.keyword}" class="form-control form-control-tag"/>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+                                分类：					<select id="category-select" class="form-control form-control-chosen" data-placeholder="请选择">
+								  <optgroup label="" th:each="category:${categoryList}" >
+								  	<option th:text="${category.name}" th:value="${category.category_id}">Java</option>
+								  </optgroup>
+								</select>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+								<button class="btn btn-primary float-right" id="submitBlog">修改</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+<script type="text/javascript" th:inline="javascript">
+$(function(){
+	
+	//显示右侧日历
+	new calendar('calendar');  
+	
+	$("#tosearch-div").hide();
+	var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.customConfig.uploadImgServer = '/blog/picture/upload'; //上传URL
+	editor.customConfig.uploadImgMaxSize = 5 * 1024 * 1024;    
+	editor.customConfig.uploadFileName = 'myfile';
+	editor.customConfig.uploadImgHeaders = {
+		    'Accept': 'text/x-json'
+		};
+	editor.customConfig.customAlert = function (info) {
+//	    alert('自定义提示：' + info)
+	};
+	editor.customConfig.uploadImgHooks = {
+			customInsert: function (insertImg, result, editor) {
+	            var url =result.url;
+	            insertImg(url);
+			},
+			before : function(xhr, editor, files) {
+			},		
+			success : function(xhr, editor, result) {
+			},
+			fail : function(xhr, editor, result) {
+				alert("上传失败，原因是"+result);
+			},		
+			error : function(xhr, editor) {	
+				alert("上传出错！");		
+			},		
+			timeout : function(xhr, editor) {
+				alert("上传超时！");
+			}
+	};
+	
+    editor.create();
+    var blog_content = [[${blogInfo.content}]]; //获取博客内容
+    editor.txt.html([[${blogInfo.content}]]);
+    
+	/**
+	 * 修改监听--------------
+	 */
+	$("#submitBlog").on("click",function(){
+		var flag = true;
+		var title = $("#title").val();
+		var summary = $("#summary").val();
+		var content = editor.txt.html();
+		var keyword = $("#key-word").val();
+		var category_id = $("#category-select").val();
+		var blog_id = [[${blogInfo.blog_id}]];
+		if(title==""){
+			layer.tips('标题不能为空！', '#title',{tipsMore: true});
+			flag = false;
+		}
+		if(summary==""){
+			layer.tips('摘要不能为空！', '#summary',{tipsMore: true});
+			flag = false;
+		}
+		if(editor.txt.text()==""){
+			layer.tips('内容不能为空！', '#editor',{tipsMore: true});
+			flag = false;
+		}
+		if(keyword==""){
+			layer.tips('关键字不能为空！', '#key-word',{tipsMore: true});
+			flag = false;
+		}
+		if(flag){
+			$.ajax({
+				url:"/blog/blog/updateBlog",
+				type:"post",
+				data:JSON.stringify({
+					"title":title,
+					"summary":summary,
+					"content":content,
+					"keyword":keyword,
+					"category_id":category_id,
+					"blog_id":blog_id
+				}),
+				dataType:"json",
+				contentType:"application/json",
+				success:function(result){
+					if(result==1){
+						layer.msg("修改成功！");
+						setTimeout(function(){
+							window.location.href = "/blog/";
+						},1000);
+					}else{
+						layer.msg("修改失败！");
+					}
+				},
+				error:function(result){
+					layer.msg("修改失败！");
+				}
+			});
+		}
+	});
+		
+});
+</script>
+</body>
+</html>

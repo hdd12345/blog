@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    <link href="../../static/css/profile.css" th:href="@{/css/profile.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/header.js}"></script>
+    <!-- <script src="../../js/userspace/main.js" th:src="@{/js/userspace/main.js}"></script> -->
+</head>
+<body>
+
+<header th:replace="fragments/header::header"></header>
+
+<!-- Page Content -->
+<div class="container" style="margin-top: 30px">
+	<div class="row" >
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col-md-7">
+			        <div class="img-box">
+			            <div class="thumb-box"></div>
+			            <div class="spinner"></div>
+			        </div>
+			        <div class="action">
+			            <div id="file" class="new-contentarea tc">
+			                <a href="javascript:void(0)" class="upload-img">
+			                    <label for="upload-file">浏览</label>
+			                </a>
+			                <input type="file" class="" name="upload-file" id="upload-file"/>
+			            </div>
+			            <input type="button" id="btnSave" class="btn-crop" value="上传" />
+			            <input type="button" th:id="btnCrop" class="btn-crop" value="裁切" />
+			            <input type="button" id="btnZoomOut" class="btn-zoom-out" value="-" />
+			            <input type="button" id="btnZoomIn" class="btn-zoom-in" value="+" />
+			        </div>
+	    		</div>
+			    <div class="col-md-5">
+			        <div class="cropped"></div>
+			    </div>
+			</div>
+		</div>
+		
+		<div class="col-md-4">
+			<!-- 个人设置 -->
+            <div class="card ">
+ 				<h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 个人设置</h5>
+                    <div class="card-block">
+						<form method="post" th:object="${session.user}" id="userForm">
+							<input type="hidden" name="id" id="userId" th:value="*{user_id}" />
+							<input type="hidden" id="image" th:value="*{image}"/>
+							<div class="form-group ">
+								<label for="username" class="col-form-label">账号</label>
+								<input type="text" class="form-control" id="username" name="username"  th:value="*{username}" readonly="readonly"/>
+						
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-form-label">邮箱</label>
+								<input type="email" class="form-control" id="email" name="email" th:value="*{email}" maxlength="50" placeholder="请输入邮箱"/>
+							</div>
+							<div class="form-group">
+								<label for="password" class="col-form-label">密码&nbsp;(&nbsp;修改密码&nbsp;<input type="checkbox" id="is-update-pwd"/>&nbsp;)</label>
+								<input type="password" class="form-control" id="password" name="password"  th:value="*{password}" maxlength="30" readonly="readonly"/>
+							</div>
+							<div class="update-pwd-box form-group" style="display: none;">
+								<label for="password" class="col-form-label">新密码</label>
+								<input type="password" class="form-control" id="new-password" name="new-password" maxlength="30"/>
+							</div>
+							<div class="update-pwd-box form-group" style="display: none;">
+								<label for="password" class="col-form-label">确认新密码</label>
+								<input type="password" class="form-control" id="confirm-new-password" name="confirm-new-password" maxlength="30"/>
+							</div>
+							<div class="form-group">
+								<button type="button" id="update" class="btn btn-primary">保存</button>
+							</div>
+						</form>
+                        
+                    </div>
+            </div>
+		</div>
+	    
+	</div>
+	
+</div>
+<!-- /.container -->
+
+
+
+ 
+<!-- JavaScript -->
+<script type="text/javascript" th:src="@{/js/cropbox.js}"></script>
+<script type="text/javascript">
+      $(window).load(function() {
+　　　　　//options 是首次加载显示的默认的图片样式
+          var options = {
+              thumbBox: '.thumb-box',
+              spinner: '.spinner',
+              imgSrc: '/blog/pic/'+$("#image").val()
+          }
+　　　　　　
+          var cropper = $('.img-box').cropbox(options);
+          //选择本地图片
+          $('#upload-file').on('change', function() {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  options.imgSrc = e.target.result;
+                  cropper = $('.img-box').cropbox(options);
+              }
+              reader.readAsDataURL(this.files[0]);
+              this.files = [];
+          })
+          $('#btnCrop').on('click', function() {
+              var image = cropper.getDataURL();
+              $('.cropped').html('');
+              $('.cropped').append('<img src="' + image + '" align="absmiddle" style="width:64px;margin-top:0px;border-radius:64px;box-shadow:0px 0px 12px #7E7E7E;" /><p>64px*64px</p>');
+              $('.cropped').append('<img src="' + image + '" align="absmiddle" style="width:100px;margin-top:0px;border-radius:128px;box-shadow:0px 0px 12px #7E7E7E;"/><p>100px*100px</p>');
+              $('.cropped').append('<img src="' + image + '" align="absmiddle" style="width:150px;margin-top:0px;border-radius:180px;box-shadow:0px 0px 12px #7E7E7E;"/><p>150px*150px</p>');
+          })
+          $('#btnZoomIn').on('click', function() {
+　　　　　　　　//鼠标滚轮缩小
+              cropper.zoomIn();
+          })
+          $('#btnZoomOut').on('click', function() {
+　　　　　　　　//鼠标滚轮放大　　
+              cropper.zoomOut();
+          })
+          //上传头像
+          $('#btnSave').on('click', function(){
+		    var base64Data = cropper.getDataURL();
+		   	$.ajax({
+		   		url:"/blog/picture/uploadBase64",
+		   		type:"post",
+		   		cache:false,
+		   		contentType:"application/x-www-form-urlencoded",
+		   		data:{
+		   			"base64Data":base64Data
+		   		},
+		   		success:function(result){
+		   			layer.msg("头像保存成功！");
+		   			$("#image").val(result);
+		   			options.imgSrc = "/blog/pic/" + result;
+	                cropper = $('.img-box').cropbox(options);
+		   		},
+		   		error:function(result){
+		   			layer.msg("头像上传失败！")
+		   		}
+		   	});
+		});
+        
+		var is_update_pwd = false;
+		//是否修改密码切换监听
+		$("#is-update-pwd").change(function(){
+			if($(this).is(':checked')){
+				is_update_pwd = true;
+				$(".update-pwd-box").show();
+			}else{
+				is_update_pwd = false;
+				$(".update-pwd-box").hide();
+			}
+		});
+		
+		$("#update").on("click",function(){
+			var flag = true;
+			var image = $("#image").val();
+			var user_id = $("#userId").val();
+			var email = $("#email").val();
+			var new_password = $("#new-password").val();
+			var confirm_new_password = $("#confirm-new-password").val();
+			var param;
+			if(is_update_pwd){
+				param = {"image":image,"user_id":user_id,"email":email,"password":new_password};
+				if(new_password==""){
+					layer.tips('新密码不能为空！', '#new-password',{tipsMore: true});
+					flag = false;
+				}
+				if(confirm_new_password==""){
+					layer.tips('确认新密码不能为空！', '#confirm-new-password',{tipsMore: true});
+					flag = false;
+				}
+				if(new_password!=confirm_new_password){
+					layer.tips('两次密码不一致！', '#confirm-new-password',{tipsMore: true});
+					flag = false;
+				}
+			}else{
+				param = {"image":image,"user_id":user_id,"email":email};
+			}
+			if(email==""){
+				layer.tips('邮箱不能为空！', '#email',{tipsMore: true});
+				flag = false;
+			}
+			if(flag){
+				$.ajax({
+					url:"/blog/user/updateUser",
+					type:"post",
+					dataType:"json",
+					contentType:"application/json",
+					data:JSON.stringify(param),
+					success:function(result){
+						if(result>0){
+							layer.msg("保存成功！");
+						}else{
+							layer.msg("保存失败！");
+						}
+					},error:function(result){
+						layer.msg("保存失败！");
+					}
+				});
+			}
+		});
+		
+      });
+  </script>
+
+</body>
+</html>

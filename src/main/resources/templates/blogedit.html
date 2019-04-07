@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+      <link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	  <link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+      <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+      <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+      <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+      <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+      <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+      <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+            rel="stylesheet"/>
+      <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+      <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+      <script type="text/javascript" th:src="@{/js/calendar1.js}"></script>
+      <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+      <script type="text/javascript" th:src="@{/wangEditor-3.1.0/release/wangEditor.min.js}"></script>
+      <script type="text/javascript" th:src="@{/js/myjs/blogedit.js}"></script>
+</head>
+<body>
+<style type="text/css">
+ 
+    @import "/css/emoji/nature.css";
+    @import "/css/emoji/object.css";
+    @import "/css/emoji/people.css";
+    @import "/css/emoji/place.css";
+    @import "/css/emoji/Sysmbols.css";
+    @import "/css/emoji/twemoji.css";
+ 
+</style>
+
+<header th:replace="fragments/header::header"></header>
+
+<!-- Page Content -->
+<div class="container blog-content-container">
+
+    <div style="display: -webkit-box;display: -webkit-flex;display: -ms-flexbox;
+  	display: flex;-webkit-flex-wrap: wrap;-ms-flex-wrap: wrap;flex-wrap: wrap;
+  	margin-right: -100px;margin-left: -100px;">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-9">
+
+            <!-- Blog Post -->
+            <div class="card mb-4">
+                <div class="card-block">
+                	<input type="hidden" name="id" value=""/>
+                    <input  type="text" class="form-control" placeholder="请填写博客标题"  id="title" name="title"  value=""  maxlength="50"/>
+					
+                    <textarea class="blog-textarea" placeholder="请填写博客摘要"  id="summary" name="summary" maxlength="300" style="margin-top: 10px"></textarea>
+
+                    <hr/>
+                    <div id="editor"></div>
+                    
+
+                    <hr/>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 右侧栏目 -->
+        <div class="col-md-3">	
+        		<!-- 日历 -->
+                <div class="card ">
+                    <h5 class="card-header"><i class="fa fa-bars" aria-hidden="true"></i> 日历</h5>
+                    <div class="card-block">
+                        <div class="row" id="calendar">
+                        </div>
+                    </div>
+                </div>
+                <div class="card ">
+                    <h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 博客设置</h5>
+                    <div class="card-block">
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+                                关键字： 					<input id="key-word" type="text" class="form-control form-control-tag"/>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+                                分类：					<select id="category-select" class="form-control form-control-chosen" data-placeholder="请选择">
+								  <optgroup label="" th:each="category:${categoryList}" >
+								  	<option th:text="${category.name}" th:value="${category.category_id}">Java</option>
+								  </optgroup>
+								</select>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div  class="col-lg-12">
+								<button class="btn btn-primary float-right" id="submitBlog">发布</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+ 
+</body>
+</html>

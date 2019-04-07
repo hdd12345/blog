@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.mapper.PraiseMapper" >
+
+    <resultMap id="BaseResultMap" type="com.blog.entity.Praise" >
+        <id column="praise_id" property="praise_id" jdbcType="VARCHAR" />
+        <result column="praise_time" property="praise_time" jdbcType="TIMESTAMP" />
+        <result column="user_id" property="user_id" jdbcType="VARCHAR" />
+        <result column="blog_id" property="blog_id" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from praise
+        where praise_id = #{praise_id,jdbcType=VARCHAR}
+    </delete>
+    
+    <insert id="insertPraise" parameterType="com.blog.entity.Praise" >
+        insert into praise
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="praise_id != null" >
+                praise_id,
+            </if>
+            <if test="praise_time != null" >
+                praise_time,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+            <if test="blog_id != null" >
+                blog_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="praise_id != null" >
+                #{praise_id,jdbcType=VARCHAR},
+            </if>
+            <if test="praise_time != null" >
+                #{praise_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="user_id != null" >
+                #{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="blog_id != null" >
+                #{blog_id,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <select id="selectPraise" resultType="Praise">
+    	select * from praise where blog_id=#{blog_id} and user_id=#{user_id}
+    </select>
+    
+    <delete id="deletePraise">
+    	delete from praise where blog_id=#{blog_id} and user_id=#{user_id}
+    </delete>
+
+</mapper>

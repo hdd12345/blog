@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<link href="../../static/css/blog.css" th:href="@{/css/H-ui.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/calendar.js}"></script>
+    <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/header.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/blogInfo.js}"></script>
+</head>
+<body>
+<!-- Page Content -->
+
+<header th:replace="fragments/header::header"></header>
+
+<div class="container blog-content-container">
+
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+
+            <!-- Blog Post -->
+            <div class="card mb-4">
+                <div class="card-block">
+                    <h4 class="card-title">
+							<span>
+			                  <a href="javascript:void(0)" th:title="${blogInfo.user.username}" style="text-decoration:none;" > 
+			                    <img th:src="@{/pic/{imageName}(imageName=${blogInfo.user.image})}" class="blog-avatar-50"/>
+			                    <!-- th:src="${blogModel.user.avatar} == null ? '/images/avatar-defualt.jpg' : ${blogModel.user.avatar}"  -->
+			                  </a>
+					        </span>
+                        <a href="javascript:void(0)" class="card-link" th:text="${blogInfo.title}">
+                            	博客标题
+                        </a>
+                        <input type="hidden" id="blog_id" th:value="${blogInfo.blog_id}"/>
+                    </h4>
+                    <div class="card-text">
+                        <a href="javascript:void(0)" class="card-link" th:text="${blogInfo.user.username}" ></a> 发表于<span th:text="${#dates.format(blogInfo.create_time, 'yyyy-MM-dd HH:mm')}"></span>
+                        	<i class="fa fa-eye" aria-hidden="true" th:text="${blogInfo.read_count}">阅读量</i>
+		                    <a><i id="praise" class="fa fa-heart-o" aria-hidden="true" th:text="${blogInfo.praise_count}">点赞量</i></a> 
+                         <a th:href="@{/toUpdateBlog/{blog_id}(blog_id=${blogInfo.blog_id})}" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" style="text-decoration:none;">编辑</a>
+                         <a class="deleteBlog" href="javascript:void(0)" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" th:name="${blogInfo.blog_id}" style="text-decoration:none;">删除</a>
+                    </div>
+                    <hr/>
+                    <article class="post-content" th:utext="${blogInfo.content}">
+                       	内容
+                	</article>
+                    <hr/>
+                </div>
+                <div class="card-block">
+
+
+                    <h6>关键字：<a href="javascript:void(0)" style="text-decoration:none;">
+                        <span class="badge badge-default" th:text="${blogInfo.keyword}" >SpringData</span>
+                    </a></h6>
+
+                </div>
+				
+				<!-- 发表评论 -->
+                <div class="card-block">
+                    <h6>评论：</h6>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <textarea id="comment-area" class="blog-textarea" placeholder="看帖需留言~"></textarea>
+                        </div>
+                    </div>
+                    <button id="submit-comment" class="btn btn-primary float-right">发表评论</button>
+                </div>
+                
+                <!-- 显示评论 -->
+                <div class="card-block">
+                    <ul class="commentList mt-50" th:each="commentInfo:${commentList}">
+						<li class="comment-item item cl"> <a href="#"><i class="avatar size-L radius"><img th:src="@{/pic/{imageName}(imageName=${commentInfo.commentUser.image})}"/></i></a>
+			                <div class="comment-main">
+			                    <header class="comment-header">
+			                        <div class="comment-meta">
+			                        	<a th:text="${commentInfo.commentUser.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">评论者用户名</a>&nbsp;&nbsp;&nbsp;
+			                            <a class="deleteComment" href="javascript:void(0)" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" th:name="${commentInfo.comment_id}" style="text-decoration:none;" >删除</a>
+			                            <time class="f-r" th:text="${#dates.format(commentInfo.comment_time,'yyyy-MM-dd HH:mm')}">评论时间</time>
+			                        </div>
+			                    </header>
+			                    <div class="comment-body">
+			                        <span th:text="${commentInfo.comment_content}"></span>
+									<!-- 回复列表 -->
+									<!-- <div th:if="${#lists.size(commentInfo.replyList)} != 0"> -->
+			                        <ul class="commentList" th:each="replyInfo:${commentInfo.replyList}">
+			                            <li class="reply-item item cl"> 
+				                            <a href="javascript:void(0)" style="text-decoration:none;">
+				                            <i class="avatar size-L radius"><img th:src="@{/pic/{imageName}(imageName=${replyInfo.user.image})}"/></i>
+				                            </a>
+			                                <div class="comment-main">
+			                                    <header class="comment-header">
+			                                        <div class="comment-meta">
+			                                        	<a th:text="${replyInfo.user.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">回复者用户名</a>
+			                                        	<span>&nbsp;回复&nbsp;</span>
+			                                        	<a th:text="${replyInfo.target.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">被回复者用户名</a>&nbsp;&nbsp;&nbsp;
+			                                        	<a class="deleteReply" href="javascript:void(0)" th:name="${replyInfo.reply_id}" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" style="text-decoration:none;">删除</a>
+			                                            <time class="f-r" th:text="${#dates.format(replyInfo.reply_time,'yyyy-MM-dd HH:mm')}">回复时间</time>
+			                                        </div>
+			                                    </header>
+			                                    <div class="comment-body">
+			                                        	<span th:text="${replyInfo.reply_content}">回复内容</span>
+			                                        	<button class="hfhf f-r btn btn-default size-S" th:value="${replyInfo.comment_id}" th:name="${replyInfo.user_id}">回复</button>
+			                                    </div>
+			                                </div>
+			                            </li>
+			                        </ul>
+			                        <!-- </div> -->
+									<!-- th:name="${commentInfo.comment_id}" -->
+			                        <button class="hfpl f-r btn btn-default size-S mt-10" th:value="${commentInfo.user_id}" th:name="${commentInfo.comment_id}" >回复</button>
+			                    </div>
+			                </div>
+			           </li>
+
+        			</ul>
+					<!--用于回复评论。-->
+			        <div class="comment hidden mt-20">
+			            <div id="err2" class="Huialert Huialert-danger hidden radius">成功状态提示</div>
+			            <textarea class="textarea" style="height:100px;" > </textarea>
+			            <button onclick="" type="button" class="btn btn-primary radius mt-10">回复</button>
+			            <a class="cancelReply f-r mt-10">取消回复</a>
+			        </div>
+			        <div class="comment2 hidden mt-20">
+			            <div id="err2" class="Huialert Huialert-danger hidden radius">成功状态提示</div>
+			            <textarea class="textarea" style="height:100px;" > </textarea>
+			            <button onclick="" type="button" class="btn btn-primary radius mt-10">回复</button>
+			            <a class="cancelReply2 f-r mt-10">取消回复</a>
+			        </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 右侧栏目 -->
+        <div class="col-md-4">
+            <div>
+                <!-- 日历 -->
+                <div class="card ">
+                    <h5 class="card-header"><i class="fa fa-bars" aria-hidden="true"></i> 日历</h5>
+                    <div class="card-block">
+                        <div class="row">
+                            <div id="iii" class="col-lg-12">
+								<div id="calendar" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				
+				<!-- 热门文章 -->
+                <div class="card my-4">
+                    <h5 class="card-header"><i class="fa fa-fire" aria-hidden="true"></i> 热门文章</h5>
+                    <ul class="list-group" th:each="hotBlog:${hotBlogList}">
+                        <a th:href="@{/blog/blogInfo/{blog_id}(blog_id=${hotBlog.blog_id})}" class="list-group-item" >
+                        	<span th:text="${hotBlog.title}">标题</span>
+                        	<span th:text="${hotBlog.read_count}" class="badge badge-danger badge-pill">11115</span>
+                        </a>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+</div>
+
+<!-- /.container -->
+<script type="text/javascript" th:inline="javascript">
+$(function () {
+	//显示右侧日历
+	new calendar('calendar');  
+	
+    //发表评论
+	$("#submit-comment").on("click",function(){
+		var user = [[${session.user}]];
+		var user_id;
+		if(user == null){
+			window.location.href="`/blog/tologin";
+		}
+		else{
+			user_id = user.user_id;
+			var comment_content = $("#comment-area").val();
+			var blog_id = [[${blogInfo.blog_id}]];
+		 	$.ajax({
+				url:"/blog/comment/addComment",
+				type:"post",
+				dataType:"json",
+				contentType:"application/json",
+				data:JSON.stringify({
+					"blog_id":blog_id,
+					"user_id":user_id,
+					"comment_content":comment_content,
+				}),
+				success:function(result){
+					if(result>0){
+						layer.msg("评论成功！");
+						setTimeout(function(){
+							window.location.reload();
+						},1000);
+					}else{
+						layer.msg("评论失败！");
+					}
+				},
+				error:function(result){
+					layer.msg("评论失败！");
+				}
+			});
+		}		 
+	});
+    
+    //回复评论
+	$(".cancelReply").prev().on("click",function(){
+		var user = [[${session.user}]];
+		var user_id;
+		if(user == null){
+			window.location.href="/blog/tologin";
+		}
+		else{
+			user_id = user.user_id;
+			var comment_id = $(this).parent(".comment").prev().attr("name");
+			var target_id = $(this).parent(".comment").prev().val();
+			var reply_content = $(this).prev().val();
+		 	$.ajax({
+				url:"/blog/comment/addReply",
+				type:"post",
+				dataType:"json",
+				contentType:"application/json",
+				data:JSON.stringify({
+					"comment_id":comment_id,
+					"user_id":user_id,
+					"reply_content":reply_content,
+					"target_id":target_id
+				}),
+				success:function(result){
+					if(result>0){
+						layer.msg("回复成功！");
+						setTimeout(function(){
+							window.location.reload();
+						},1000);
+					}else{
+						layer.msg("回复失败！");
+					}
+				},
+				error:function(result){
+					layer.msg("回复失败！");
+				}
+			});
+		}	
+	});
+    
+    //回复回复
+	$(".cancelReply2").prev().on("click",function(){
+		var user = [[${session.user}]];
+		var user_id;
+ 		if(user == null){
+			window.location.href="/blog/tologin";
+		}
+		else{
+			user_id = user.user_id;
+			var comment_id = $(this).parent(".comment2").prev().val();
+			var target_id = $(this).parent(".comment2").prev().attr("name");
+			var reply_content = $(this).prev().val();
+		 	$.ajax({
+				url:"/blog/comment/addReply",
+				type:"post",
+				dataType:"json",
+				contentType:"application/json",
+				data:JSON.stringify({
+					"comment_id":comment_id,
+					"user_id":user_id,
+					"reply_content":reply_content,
+					"target_id":target_id
+				}),
+				success:function(result){
+					if(result>0){
+						layer.msg("回复成功！");
+						setTimeout(function(){
+							window.location.reload();
+						},1000);
+					}else{
+						layer.msg("回复失败！");
+					}
+				},
+				error:function(result){
+					layer.msg("回复失败！");
+				}
+			});
+		} 
+	});
+    
+    //判断当前用户是否点赞
+    var user = [[${session.user}]];
+    if(user!=null){
+    	var blog_id = [[${blogInfo.blog_id}]];
+    	$.ajax({
+    		url:"/blog/praise/isPraise/"+blog_id+"/"+user.user_id,
+    		type:"get",
+    		dataType:"json",
+    		success:function(result){
+    			if(result!=null){
+    				$("#praise").css("color","green");
+    			}
+    		},error(result){
+    			console.log(result);
+    		}
+    	});
+    }
+    
+    //点赞监听
+    $("#praise").on("click",function(){
+    	if(user == null){
+    		window.location.href="/blog/tologin";
+    	}else{
+    		var blog_id = [[${blogInfo.blog_id}]];
+    		$.ajax({
+    			url:"/blog/praise/addOrCancel/"+blog_id+"/"+user.user_id,
+        		type:"post",
+        		dataType:"json",
+        		success:function(result){
+        			if(result>0){
+        				$("#praise").text(parseInt($("#praise").text())+1);
+        				$("#praise").css("color","green");
+        			}else{
+        				$("#praise").text($("#praise").text()-1);
+        				$("#praise").css("color","black");
+        			}
+        		},
+        		error:function(result){
+        			console.log(result);
+        		}
+    		});
+    	}
+    });
+    
+});
+</script>
+</body>
+</html>

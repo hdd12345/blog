@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.mapper.CategoryMapper" >
+
+    <resultMap id="BaseResultMap" type="com.blog.entity.Category" >
+        <id column="category_id" property="category_id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        category_id, name
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from category
+        where category_id = #{category_id,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from category
+        where category_id = #{category_id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertCategory" parameterType="com.blog.entity.Category" >
+        insert into category
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="category_id != null" >
+                category_id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="category_id != null" >
+                #{category_id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateCategory" parameterType="com.blog.entity.Category" >
+        update category
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where category_id = #{category_id,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectAllCategory" resultType="Category">
+    	select * from category
+    </select>
+
+</mapper>

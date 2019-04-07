@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.mapper.ReplyMapper" >
+
+    <resultMap id="BaseResultMap" type="com.blog.entity.ReplyInfo" >
+        <id column="reply_id" property="reply_id" jdbcType="VARCHAR" />
+        <result column="reply_content" property="reply_content" jdbcType="VARCHAR" />
+        <result column="reply_time" property="reply_time" jdbcType="TIMESTAMP" />
+        <result column="target_id" property="target_id" jdbcType="VARCHAR" />
+        <result column="comment_id" property="comment_id" jdbcType="VARCHAR" />
+        <result column="user_id" property="user_id" jdbcType="VARCHAR" />
+        <association property="user" javaType="User">
+        	<id column="user_id" property="user_id" jdbcType="VARCHAR" />
+	        <result column="username" property="username" jdbcType="VARCHAR" />
+	        <result column="password" property="password" jdbcType="VARCHAR" />
+	        <result column="email" property="email" jdbcType="VARCHAR" />
+	        <result column="image" property="image" jdbcType="VARCHAR" />
+	        <result column="sex" property="sex" jdbcType="VARCHAR" />	
+        </association>
+        <association property="target" javaType="User">
+        	<id column="user_id" property="user_id" jdbcType="VARCHAR" />
+	        <result column="username" property="username" jdbcType="VARCHAR" />
+	        <result column="password" property="password" jdbcType="VARCHAR" />
+	        <result column="email" property="email" jdbcType="VARCHAR" />
+	        <result column="image" property="image" jdbcType="VARCHAR" />
+	        <result column="sex" property="sex" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        reply_id, reply_content, reply_time, target_id, comment_id, user_id
+    </sql>
+
+    <select id="selectByPrimaryKey" resultType="Reply" parameterType="java.lang.String" >
+        select * from reply
+        where reply_id = #{reply_id,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from reply
+        where reply_id = #{reply_id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertReply" parameterType="com.blog.entity.Reply" >
+        insert into reply
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="reply_id != null" >
+                reply_id,
+            </if>
+            <if test="reply_content != null" >
+                reply_content,
+            </if>
+            <if test="reply_time != null" >
+                reply_time,
+            </if>
+            <if test="target_id != null" >
+                target_id,
+            </if>
+            <if test="comment_id != null" >
+                comment_id,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="reply_id != null" >
+                #{reply_id,jdbcType=VARCHAR},
+            </if>
+            <if test="reply_content != null" >
+                #{reply_content,jdbcType=VARCHAR},
+            </if>
+            <if test="reply_time != null" >
+                #{reply_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="target_id != null" >
+                #{target_id,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_id != null" >
+                #{comment_id,jdbcType=VARCHAR},
+            </if>
+            <if test="user_id != null" >
+                #{user_id,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateReply" parameterType="com.blog.entity.Reply" >
+        update reply
+        <set >
+            <if test="reply_content != null" >
+                reply_content = #{reply_content,jdbcType=VARCHAR},
+            </if>
+            <if test="reply_time != null" >
+                reply_time = #{reply_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="target_id != null" >
+                target_id = #{target_id,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_id != null" >
+                comment_id = #{comment_id,jdbcType=VARCHAR},
+            </if>
+            <if test="user_id != null" >
+                user_id = #{user_id,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where reply_id = #{reply_id,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

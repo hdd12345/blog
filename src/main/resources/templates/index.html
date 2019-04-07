@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<!-- <head th:replace="~{fragments/header :: header}">
+</head> -->
+<head >
+	<link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/js/myjs/header.js}"></script>
+</head>
+<body>
+	<!-- <div th:include="fragments/header::header"></div> -->	
+	<header th:replace="fragments/header::header"></header>
+<!-- Page Content -->
+<div class="container blog-content-container">
+
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+			<div th:each="blog:${pageBean.list}">
+            <!-- Blog Post -->
+            <div class="card mb-4" >
+                <div class="card-block">
+                    <h4 class="card-title">
+						<span>
+			              <a th:href="@{/blog/blogInfo/{blog_id}(blog_id=${blog.blog_id})}" th:title="${blog.user.username}" style="text-decoration:none;">
+			                <img th:src="@{/pic/{imageName}(imageName=${blog.user.image})}" class="blog-avatar-50"
+                                 th:alt="${blog.user.username}"/>
+			              </a>
+					    </span>
+                        <a th:href="@{/blog/blogInfo/{blog_id}(blog_id=${blog.blog_id})}" th:text="${blog.title}" class="card-link" th:title="${blog.title}" ></a>
+                    </h4>
+                    <p class="card-text" th:text="${blog.summary}"></p>
+                    <div class="card-text">
+                        <a href="#" th:class="card-link" th:text="${blog.user.username}"></a>
+                        <span th:text="${#dates.format(blog.create_time,'yyyy-MM-dd hh:mm:ss')}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="fa fa-eye" aria-hidden="true" th:text="${blog.read_count}">210</i>
+                        <i class="fa fa-heart-o" aria-hidden="true" th:text="${blog.praise_count}">10</i> 
+                        <!-- <i class="fa fa-comment-o" aria-hidden="true">110</i> -->
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            
+
+            <!-- 所有博客分页 -->
+            <th:block th:if="${category_id} == 0">
+            	<nav>
+	                <ul class="pagination justify-content-center mb-4" >
+	                	<th:block th:if="${pageBean.totalPage} != 0">
+	                		<li class="page-item">
+		                        <a th:href="@{/?currentPage=1}" class="page-link" aria-label="Previous">
+		                            <span aria-hidden="true">&laquo;</span>
+		                        </a>
+		                    </li>
+		                    <th:block th:each="i : ${#numbers.sequence(1,pageBean.totalPage)}">
+			                    <th:block th:if="${i} == ${pageBean.currentPage}">
+			                    	<li class="page-item active"><a th:text="${i}" href="javascript:void(0)" class="page-link">页数</a></li>
+			                    </th:block>
+			                    <th:block th:unless="${i} == ${pageBean.currentPage}">
+			                    	<li class="page-item"><a th:text="${i}" th:href="@{/?currentPage={cp}(cp=${i})}" class="page-link">页数</a></li>
+			                    </th:block>
+	                    	</th:block>
+	                    	<li class="page-item">
+		                        <a th:href="@{/?currentPage={cp}(cp=${pageBean.totalPage})}" class="page-link" aria-label="Next">
+		                            <span aria-hidden="true">&raquo;</span>
+		                        </a>
+		                    </li>
+	                	</th:block>
+	                </ul>
+	            </nav>
+            </th:block>
+            <!-- 分类博客分页 -->
+            <th:block th:if="${category_id} != 0">
+            	<nav>
+	                <ul class="pagination justify-content-center mb-4">
+	                    <th:block th:if="${pageBean.totalPage} != 0">
+	                    	<li class="page-item">
+		                        <a th:href="@{/{cid}?currentPage=1(cid=${category_id})}" class="page-link" aria-label="Previous">
+		                            <span aria-hidden="true">&laquo;</span>
+		                        </a>
+		                    </li>
+		                    <th:block th:each="i : ${#numbers.sequence(1,pageBean.totalPage)}">
+			                    <th:block th:if="${i} == ${pageBean.currentPage}">
+			                    	<li class="page-item active"><a th:text="${i}" href="javascript:void(0)" class="page-link">页数</a></li>
+			                    </th:block>
+			                    <th:block th:unless="${i} == ${pageBean.currentPage}">
+			                    	<li class="page-item"><a th:text="${i}" th:href="@{/{cid}?currentPage={cp}(cp=${i},cid=${category_id})}" class="page-link">页数</a></li>
+			                    </th:block>
+	                    	</th:block>
+	                    	<li class="page-item">
+		                        <a th:href="@{/{cid}?currentPage={cp}(cp=${pageBean.totalPage},cid=${category_id})}" class="page-link" aria-label="Next">
+		                            <span aria-hidden="true">&raquo;</span>
+		                        </a>
+		                    </li>
+	                    </th:block>
+	                </ul>
+	            </nav>
+            </th:block>
+        </div>
+
+        <!-- 右侧栏目 -->
+        <div class="col-md-4">
+            <div>
+                
+
+                <!-- 热门文章 -->
+                <div class="card">
+                    <h5 class="card-header"><i class="fa fa-fire" aria-hidden="true"></i> 热门文章</h5>
+                    <ul class="list-group" th:each="hotBlog:${hotBlogList}">
+                        <a th:href="@{/blog/blogInfo/{blog_id}(blog_id=${hotBlog.blog_id})}" class="list-group-item" >
+                        	<span th:text="${hotBlog.title}">标题</span>
+                        	<span th:text="${hotBlog.read_count}" class="badge badge-danger badge-pill">11115</span>
+                        </a>
+                    </ul>
+                </div>
+
+                <!-- 最新发布 -->
+                <div class="card my-4">
+                    <h5 class="card-header"><i class="fa fa-line-chart" aria-hidden="true"></i> 最新发布</h5>
+                    <div class="list-group">
+                        <ul class="list-group" th:each="newBlog:${newBlogList}">
+                            <a th:href="@{/blog/blogInfo/{blog_id}(blog_id=${newBlog.blog_id})}" th:text="${newBlog.title}" class="list-group-item" >
+                                	标题
+                            </a>
+                        </ul>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+</body>
+</html>

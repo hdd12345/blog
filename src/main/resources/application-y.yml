@@ -1,0 +1,53 @@
+server:
+  port: 8088
+  context-path: /blog
+#  error:
+#    path: /error.html
+  tomcat:
+    uri-encoding: utf-8
+#logback日志
+#logging:
+#  config: classpath:logback.xml
+debug: false     
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1195811561
+  #druid连接池
+  druid:
+    initialSize: 5                                 
+    minIdle: 5                                     
+    maxActive: 20                                  
+    maxWait: 60000                                 
+    timeBetweenEvictionRunsMillis: 60000           
+    minEvictableIdleTimeMillis: 300000             
+    validationQuery: SELECT 1 FROM DUAL            
+    testWhileIdle: true                            
+    testOnBorrow: false                            
+    testOnReturn: false                            
+    poolPreparedStatements: false                  
+    maxPoolPreparedStatementPerConnectionSize: 20  
+    filters: stat,wall,log4j                       
+    connectionProperties: 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+  #Thymeleaf
+  thymeleaf:
+    mode: HTML5
+    encoding: utf-8
+    content-type: text/html
+    cache: false
+    suffix: .html
+  #上传单个文件的最大值
+  http:
+    multipart:
+      max-file-size: 10MB
+    
+#mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.blog.entity
+
+
+  
+  

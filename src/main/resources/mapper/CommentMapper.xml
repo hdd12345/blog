@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.mapper.CommentMapper" >
+
+    <resultMap id="BaseResultMap" type="com.blog.entity.CommentInfo" >
+        <id column="d_comment_id" property="comment_id" jdbcType="VARCHAR" />
+	    <result column="comment_content" property="comment_content" jdbcType="VARCHAR" />
+	    <result column="comment_time" property="comment_time" jdbcType="TIMESTAMP" />
+	    <result column="a_user_id" property="user_id" jdbcType="VARCHAR" />
+	    <result column="blog_id" property="blog_id" jdbcType="VARCHAR" />
+	    <association property="commentUser" javaType="User">
+	    	<id column="a_user_id" property="user_id" jdbcType="VARCHAR" />
+		    <result column="a_username" property="username" jdbcType="VARCHAR" />
+		    <result column="a_password" property="password" jdbcType="VARCHAR" />
+		    <result column="a_email" property="email" jdbcType="VARCHAR" />
+		    <result column="a_image" property="image" jdbcType="VARCHAR" />
+		    <result column="a_sex" property="sex" jdbcType="VARCHAR" />
+	    </association>
+	    <collection property="replyList" ofType="ReplyInfo">
+		    <id column="reply_id" property="reply_id" jdbcType="VARCHAR" />
+	        <result column="reply_content" property="reply_content" jdbcType="VARCHAR" />
+	        <result column="reply_time" property="reply_time" jdbcType="TIMESTAMP" />
+	        <result column="target_id" property="target_id" jdbcType="VARCHAR" />
+	        <result column="e_comment_id" property="comment_id" jdbcType="VARCHAR" />
+	        <result column="b_user_id" property="user_id" jdbcType="VARCHAR" />
+		    <association property="user" javaType="User">
+	        	<id column="b_user_id" property="user_id" jdbcType="VARCHAR" />
+		        <result column="b_username" property="username" jdbcType="VARCHAR" />
+		        <result column="b_password" property="password" jdbcType="VARCHAR" />
+		        <result column="b_email" property="email" jdbcType="VARCHAR" />
+		        <result column="b_image" property="image" jdbcType="VARCHAR" />
+		        <result column="b_sex" property="sex" jdbcType="VARCHAR" />	
+	        </association>
+	        <association property="target" javaType="User">
+	        	<id column="c_user_id" property="user_id" jdbcType="VARCHAR" />
+		        <result column="c_username" property="username" jdbcType="VARCHAR" />
+		        <result column="c_password" property="password" jdbcType="VARCHAR" />
+		        <result column="c_email" property="email" jdbcType="VARCHAR" />
+		        <result column="c_image" property="image" jdbcType="VARCHAR" />
+		        <result column="c_sex" property="sex" jdbcType="VARCHAR" />
+	        </association>
+	    </collection>
+    </resultMap>
+
+    <select id="selectByPrimaryKey" resultType="Comment" parameterType="java.lang.String" >
+        select * from comment 
+        where comment_id = #{comment_id,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from comment
+        where comment_id = #{comment_id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertCommend" parameterType="com.blog.entity.Comment" >
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="comment_id != null" >
+                comment_id,
+            </if>
+            <if test="comment_content != null" >
+                comment_content,
+            </if>
+            <if test="comment_time != null" >
+                comment_time,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+            <if test="blog_id != null" >
+                blog_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="comment_id != null" >
+                #{comment_id,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_content != null" >
+                #{comment_content,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_time != null" >
+                #{comment_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="user_id != null" >
+                #{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="blog_id != null" >
+                #{blog_id,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateComment" parameterType="com.blog.entity.Comment" >
+        update comment
+        <set >
+            <if test="comment_content != null" >
+                comment_content = #{comment_content,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_time != null" >
+                comment_time = #{comment_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="user_id != null" >
+                user_id = #{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="blog_id != null" >
+                blog_id = #{blog_id,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where comment_id = #{comment_id,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectByBlog_id" parameterType="String" resultMap="BaseResultMap">
+    	SELECT * FROM (SELECT comment_id AS d_comment_id,comment_content,comment_time,blog_id,
+		a.user_id AS a_user_id,a.username AS a_username,a.password AS a_password,
+		a.email AS a_email,a.image AS a_image,a.sex AS a_sex
+ 		 FROM COMMENT INNER JOIN USER AS a USING (user_id)) AS d LEFT JOIN 
+		 (SELECT reply_id,reply_content,reply_time,target_id,comment_id AS e_comment_id,
+		b.user_id AS b_user_id,b.username AS b_username,b.password AS b_password,
+		b.email AS b_email,b.image AS b_image,b.sex AS b_sex,
+		c.user_id AS c_user_id,c.username AS c_username,c.password AS c_password,
+		c.email AS c_email,c.image AS c_image,c.sex AS c_sex
+ 		FROM (SELECT * FROM reply INNER JOIN USER USING(user_id)) AS b INNER JOIN 
+ 		 USER AS c ON b.target_id=c.user_id) AS e 
+   		 ON (d.d_comment_id=e.e_comment_id) WHERE d.blog_id=#{blog_id} ORDER BY comment_time,reply_time
+    </select>
+    
+
+</mapper>

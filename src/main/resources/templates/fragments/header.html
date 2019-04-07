@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8"/>
+    <!-- <link href="../../static/css/tether.min.css" th:href="@{/css/tether.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/nprogress.css" th:href="@{/css/nprogress.css}" rel="stylesheet"/>
+    <link href="../../static/css/thinker-md.vendor.css" th:href="@{/css/thinker-md.vendor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-tageditor.css" th:href="@{/css/component-tageditor.css}" rel="stylesheet"/>
+    <link href="../../static/css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/cropbox.css" th:href="@{/css/cropbox.css}" rel="stylesheet"/>
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="../../static/css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}"
+          rel="stylesheet"/>
+    <link href="../../static/css/blog.css" th:href="@{/css/blog.css}" rel="stylesheet"/>
+    -->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse bg-inverse navbar-toggleable-md" th:fragment="header">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarsContainer" aria-controls="navbarsExampleContainer" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="/blog" style="font-weight:bold;">Blog</a>
+        <span id="login-label" class="navbar-brand" style="font-size: 20px;font-weight: blod;display: none;margin-left: 100px">用户登录</span>
+        <span id="register-label" class="navbar-brand" style="font-size: 20px;font-weight: blod;display: none;margin-left: 100px">用户注册</span>
+
+        <div class="collapse navbar-collapse" id="navbarsContainer">
+
+            <ul id="categoryList" class="navbar-nav mr-auto nav-tabs">
+                <!-- <li class="nav-item active">
+                    <a class="nav-link" href="#">框架</a>
+                </li> -->
+            </ul>
+            
+            <div class="navbar-nav mr-auto" id="tosearch-div">
+            		<form class="form-inline mt-2 mt-md-0">
+                    <input id="search-keyword" class="form-control mr-sm-2" type="text" placeholder="搜索"/>
+                    <a href="javascript:void(0)" id="search-btn" class="btn btn-outline-secondary my-2 my-sm-0"><i class="fa fa-search"
+                                                                                             aria-hidden="true"></i></a>
+            		</form>
+            </div>
+            
+            
+            
+            <div class="row" th:if="${session.user} != null">
+				 				<div>
+				 					<a href="/blog/toBlogEdit" class="btn btn-outline-success my-2 my-sm-0" style="color:#fff;">写博客</a>
+				 				</div>
+								<form action="/blog/user/logout" method="post">
+									<input class="btn btn-outline-success " type="submit" value="退出" style="color:#fff;"/>
+								</form>
+								<div>
+				 					<a th:href="@{/toUpdateUser}" class="btn btn-outline-success my-2 my-sm-0" style="color:#fff;">修改</a>
+				 				</div>
+            </div>
+ 
+                
+
+            <div class="row" th:if="${session.user} == null">
+                <div id="tologin-div">
+                	<a th:href="@{/tologin}" class="btn btn-outline-success my-2 my-sm-0" style="color:#fff;">登录</a>
+                </div>
+                <div id="toregister-div">
+                	<a th:href="@{/toregister}" class="btn btn-outline-success  my-2 my-sm-0" style="color:#fff;">注册</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+</body>
+</html>

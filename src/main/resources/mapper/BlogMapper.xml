@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.mapper.BlogMapper" >
+
+    <resultMap id="BaseResultMap" type="com.blog.entity.BlogInfo" >
+        <id column="blog_id" property="blog_id" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="LONGVARCHAR" />
+        <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+        <result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+        <result column="read_count" property="read_count" jdbcType="INTEGER" />
+        <result column="praise_count" property="praise_count" jdbcType="INTEGER" />
+        <result column="user_id" property="user_id" jdbcType="VARCHAR" />
+        <result column="category_id" property="category_id" jdbcType="VARCHAR" />
+        <result column="summary" property="summary" jdbcType="VARCHAR" />
+        <association property="user" javaType="User">
+        	<id column="user_id" property="user_id" jdbcType="VARCHAR" />
+		    <result column="username" property="username" jdbcType="VARCHAR" />
+		    <result column="password" property="password" jdbcType="VARCHAR" />
+		    <result column="email" property="email" jdbcType="VARCHAR" />
+		    <result column="image" property="image" jdbcType="VARCHAR" />
+		    <result column="sex" property="sex" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        blog_id, title, content, keyword, create_time, read_count, praise_count, user_id, 
+        category_id, summary
+    </sql>
+
+    
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from blog
+        where blog_id = #{blog_id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertBlog" parameterType="com.blog.entity.Blog" >
+        insert into blog
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="blog_id != null" >
+                blog_id,
+            </if>
+            <if test="title != null" >
+                title,
+            </if>
+            <if test="content != null" >
+                content,
+            </if>
+            <if test="keyword != null" >
+                keyword,
+            </if>
+            <if test="create_time != null" >
+                create_time,
+            </if>
+            <if test="read_count != null" >
+                read_count,
+            </if>
+            <if test="praise_count != null" >
+                praise_count,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+            <if test="category_id != null" >
+                category_id,
+            </if>
+            <if test="summary != null" >
+                summary,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="blog_id != null" >
+                #{blog_id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null" >
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="keyword != null" >
+                #{keyword,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null" >
+                #{create_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="read_count != null" >
+                #{read_count,jdbcType=INTEGER},
+            </if>
+            <if test="praise_count != null" >
+                #{praise_count,jdbcType=INTEGER},
+            </if>
+            <if test="user_id != null" >
+                #{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="category_id != null" >
+                #{category_id,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null" >
+                #{summary,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateBlog" parameterType="com.blog.entity.Blog" >
+        update blog
+        <set >
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="keyword != null" >
+                keyword = #{keyword,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null" >
+                create_time = #{create_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="read_count != null" >
+                read_count = #{read_count,jdbcType=INTEGER},
+            </if>
+            <if test="praise_count != null" >
+                praise_count = #{praise_count,jdbcType=INTEGER},
+            </if>
+            <if test="user_id != null" >
+                user_id = #{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="category_id != null" >
+                category_id = #{category_id,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null" >
+                summary = #{summary,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where blog_id = #{blog_id,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectByPrimaryKey" resultType="Blog" parameterType="java.lang.String" >
+        select * from blog 
+        where blog_id = #{blog_id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectInfoByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    	select * from blog inner join user using (user_id)
+        where blog_id = #{blog_id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectAllBlog" resultMap="BaseResultMap">
+    	select * from blog inner join user using (user_id)
+    </select>
+    
+    <select id="selectByUser_id" parameterType="String" resultMap="BaseResultMap">
+    	select * from blog inner join user using (user_id) where user_id = #{user_id}
+    </select>
+    
+    <select id="selectByCategory" parameterType="String" resultMap="BaseResultMap">
+    	select * from blog inner join user using (user_id) where category_id=#{category_id}
+    </select>
+    
+    <select id="selectNewBlog" resultType="Blog">
+    	select * from blog order by create_time desc limit 0,5
+    </select>
+    
+    <select id="selectHotBlog" resultType="Blog">
+    	select * from blog order by read_count desc limit 0,5
+    </select>
+    
+    <select id="selectVague" parameterType="String" resultMap="BaseResultMap">
+    	SELECT * FROM blog INNER JOIN USER USING(user_id) WHERE 
+		title LIKE '%${keyword}%' OR summary LIKE '%${keyword}%' ORDER BY(
+		CASE
+		WHEN title=#{keyword} OR summary=#{keyword} THEN 1
+		WHEN title LIKE '${keyword}%' OR summary LIKE '${keyword}%' THEN 2
+		WHEN title LIKE '%${keyword}' OR summary LIKE '%${keyword}' THEN 3
+		WHEN title LIKE '%${keyword}%' OR summary LIKE '%${keyword}%' THEN 4
+		END) LIMIT #{start},#{currentCount}
+    </select>
+    
+    <select id="selectVagueCount" resultType="int">
+    	SELECT COUNT(*) FROM blog INNER JOIN USER USING(user_id) WHERE 
+		title LIKE '%${value}%' OR summary LIKE '%${value}%'
+    </select>
+    
+    <select id="selectCount" resultType="int">
+    	SELECT COUNT(*) FROM blog
+    </select>
+    
+    <select id="selectCountByCategory" parameterType="String" resultType="int">
+    	SELECT COUNT(*) FROM blog WHERE category_id=#{category_id}
+    </select>
+    
+    <select id="selectPage" resultMap="BaseResultMap">
+    	select * from blog inner join user using(user_id) limit #{start},#{currentCount}
+    </select>
+    
+    <select id="selectPageByCategory" resultMap="BaseResultMap">
+    	SELECT * FROM blog INNER JOIN USER USING(user_id) 
+    	WHERE category_id=#{category_id} LIMIT #{start},#{currentCount}
+    </select>
+
+</mapper>
