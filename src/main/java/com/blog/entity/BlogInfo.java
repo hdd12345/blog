@@ -135,7 +135,5 @@ public class BlogInfo {
 	public String toString() {
 		return JSONObject.toJSONString(this).toString();
 	}
-    
-    
 
 }
