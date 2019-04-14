@@ -71,6 +71,7 @@ public class BlogController {
 		ModelAndView mav = new ModelAndView("search");
 		mav.addObject("pageBean",blogService.selectVague(keyword, currentPage));
 		mav.addObject("hotBlogList",blogService.selectHotBlog());
+		mav.addObject("newBlogList",blogService.selectNewBlog());
 		mav.addObject("keyword",keyword);
 		return mav;
 	}
