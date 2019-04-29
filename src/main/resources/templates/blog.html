@@ -91,7 +91,7 @@
 			                    <header class="comment-header">
 			                        <div class="comment-meta">
 			                        	<a th:text="${commentInfo.commentUser.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">评论者用户名</a>&nbsp;&nbsp;&nbsp;
-			                            <a class="deleteComment" href="javascript:void(0)" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" th:name="${commentInfo.comment_id}" style="text-decoration:none;" >删除</a>
+			                            <a class="deleteComment" href="javascript:void(0)" th:if="${commentInfo.commentUser.user_id} == ${currentUser.user_id}" th:name="${commentInfo.comment_id}" style="text-decoration:none;" >删除</a>
 			                            <time class="f-r" th:text="${#dates.format(commentInfo.comment_time,'yyyy-MM-dd HH:mm')}">评论时间</time>
 			                        </div>
 			                    </header>
@@ -110,7 +110,7 @@
 			                                        	<a th:text="${replyInfo.user.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">回复者用户名</a>
 			                                        	<span>&nbsp;回复&nbsp;</span>
 			                                        	<a th:text="${replyInfo.target.username}" class="comment-author" href="javascript:void(0)" style="text-decoration:none;">被回复者用户名</a>&nbsp;&nbsp;&nbsp;
-			                                        	<a class="deleteReply" href="javascript:void(0)" th:name="${replyInfo.reply_id}" th:if="${blogInfo.user.user_id} == ${currentUser.user_id}" style="text-decoration:none;">删除</a>
+			                                        	<a class="deleteReply" href="javascript:void(0)" th:name="${replyInfo.reply_id}" th:if="${replyInfo.user.user_id} == ${currentUser.user_id}" style="text-decoration:none;">删除</a>
 			                                            <time class="f-r" th:text="${#dates.format(replyInfo.reply_time,'yyyy-MM-dd HH:mm')}">回复时间</time>
 			                                        </div>
 			                                    </header>
@@ -192,7 +192,7 @@ $(function () {
 		var user = [[${session.user}]];
 		var user_id;
 		if(user == null){
-			window.location.href="`/blog/tologin";
+			window.location.href="/blog/tologin";
 		}
 		else{
 			user_id = user.user_id;

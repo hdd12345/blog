@@ -19,6 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(value="/picture")
 public class PictureController {
 	
+	/**
+	 * @param file
+	 * @return 返回json格式的图片访问路径
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/upload",method=RequestMethod.POST)
 	@ResponseBody
 	public String upload(@RequestParam(value="myfile") MultipartFile file) throws Exception{
@@ -31,6 +36,13 @@ public class PictureController {
 		return "{\"url\":"+"\""+url+"\"}";
 	}
 	
+	/**
+	 * 将字符串通过“base64，”分割，前面表示图片格式，后面为图片数据
+	 * 将表示图片数据的字符串转成字节数组写入磁盘
+	 * @param base64Data
+	 * @return 返回文件名
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/uploadBase64",method=RequestMethod.POST)
 	@ResponseBody
 	public String uploadBase64(@RequestParam String base64Data) throws Exception {
@@ -40,14 +52,12 @@ public class PictureController {
 		String suffix = "";
         if("data:image/jpeg;".equalsIgnoreCase(dataPrix)){//data:image/jpeg;base64,base64编码的jpeg图片数据
             suffix = ".jpg";
-        } else if("data:image/x-icon;".equalsIgnoreCase(dataPrix)){//data:image/x-icon;base64,base64编码的icon图片数据
-            suffix = ".ico";
         } else if("data:image/gif;".equalsIgnoreCase(dataPrix)){//data:image/gif;base64,base64编码的gif图片数据
             suffix = ".gif";
         } else if("data:image/png;".equalsIgnoreCase(dataPrix)){//data:image/png;base64,base64编码的png图片数据
             suffix = ".png";
         }else{
-            throw new Exception("上传图片格式不合法");
+            throw new Exception("上传图片格式不合法！");
         }
         String fileName = UUID.randomUUID() + suffix;
         byte[] bs = Base64Utils.decodeFromString(data);

@@ -28,6 +28,13 @@ public class BlogController {
 	@Resource(name="commentServiceImpl")
 	private CommentService commentService;
 	
+	/**
+	 * 添加博客
+	 * @param blog
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/addBlog",method=RequestMethod.POST)
 	@ResponseBody
 	public int addBlog(@RequestBody Blog blog,HttpServletRequest request) throws Exception{
@@ -65,6 +72,13 @@ public class BlogController {
 		return mav;
 	}
 	
+	/**
+	 * 根据关键字模糊搜索文章
+	 * @param keyword
+	 * @param currentPage
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/search/{keyword}",method= {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView search(@PathVariable String keyword,
 			@RequestParam(required=false,defaultValue="1") int currentPage) throws Exception{
